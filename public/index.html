@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.io Random ID Demo</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Socket.io Random ID Demo</h1>
+    <button id="send-random-id">Send Random ID</button>
+    <ul id="messages"></ul>
+
+    <script>
+        const socket = io(); // connecet to the server 
+
+        const button = document.getElementById('send-random-id');
+        const messages = document.getElementById('messages');
+
+        // Generate a random identifier
+        function generateRandomId() {
+            return Math.random().toString(36).substring(2, 10);
+        }
+
+        // Handle button click
+        button.addEventListener('click', () => {
+            const randomId = generateRandomId();
+            socket.emit('send-random-id', randomId); // Send random ID to the server
+            addMessage(`You sent: ${randomId}`);
+        });
+
+        // Add a message to the list
+        function addMessage(message) {
+            const li = document.createElement('li');
+            li.textContent = message;
+            messages.appendChild(li);
+        }
+
+        // Receive random ID from other clients
+        socket.on('receive-random-id', (randomId) => {
+            addMessage(`Received random ID: ${randomId}`);
+        });
+    </script>
+</body>
+</html>
